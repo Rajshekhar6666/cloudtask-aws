@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{% if product %}Edit product{% else %}List a product{% endif %} — Meridian Goods{% endblock %}
+{% block content %}
+
+<a class="back-link" href="{{ url_for('index') }}">&larr; Back to catalog</a>
+
+<h1>{% if product %}Edit product{% else %}List a new product{% endif %}</h1>
+
+<form class="product-form" method="post">
+  <label>
+    Name
+    <input type="text" name="name" required value="{{ product.name if product else '' }}">
+  </label>
+
+  <label>
+    Description
+    <textarea name="description" rows="4">{{ product.description if product else '' }}</textarea>
+  </label>
+
+  <div class="form-row">
+    <label>
+      Price (₹)
+      <input type="number" name="price" step="0.01" min="0.01" required
+             value="{{ product.price if product else '' }}">
+    </label>
+    <label>
+      Stock
+      <input type="number" name="stock" min="0" required
+             value="{{ product.stock if product else 0 }}">
+    </label>
+  </div>
+
+  <label>
+    Category
+    <select name="category_id">
+      <option value="">Uncategorized</option>
+      {% for c in categories %}
+        <option value="{{ c.id }}"
+          {% if product and product.category_id == c.id %}selected{% endif %}>
+          {{ c.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <button type="submit" class="btn btn-primary">
+    {% if product %}Save changes{% else %}Add to catalog{% endif %}
+  </button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — Meridian Goods{% endblock %}
+{% block content %}
+
+<a class="back-link" href="{{ url_for('index') }}">&larr; Back to catalog</a>
+
+<article class="detail-panel">
+  <span class="tile-category">{{ product.category or "Uncategorized" }}</span>
+  <h1>{{ product.name }}</h1>
+  <p class="detail-desc">{{ product.description }}</p>
+
+  <div class="detail-meta">
+    <div>
+      <span class="meta-label">Price</span>
+      <span class="meta-value price">₹{{ "%.2f"|format(product.price) }}</span>
+    </div>
+    <div>
+      <span class="meta-label">Stock</span>
+      <span class="meta-value">{{ product.stock }} units</span>
+    </div>
+  </div>
+
+  <div class="detail-actions">
+    <a class="btn btn-outline" href="{{ url_for('product_edit', product_id=product.id) }}">Edit</a>
+    <form method="post" action="{{ url_for('product_delete', product_id=product.id) }}"
+          onsubmit="return confirm('Remove {{ product.name }} from the catalog?');">
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+  </div>
+</article>
+
+{% endblock %}

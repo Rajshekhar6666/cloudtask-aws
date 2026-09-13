@@ -1,0 +1,60 @@
+<svg viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2A2724"/>
+    </marker>
+  </defs>
+
+  <rect width="1000" height="640" fill="#F6F1E7"/>
+
+  <!-- Title -->
+  <text x="40" y="44" font-size="22" font-weight="700" fill="#1B3A3A">Meridian Goods — AWS Architecture (Manual Console Deployment)</text>
+  <text x="40" y="66" font-size="12" fill="#6B6760">2-tier deployment in the account's Default VPC · Roll No. 2400290120198 · Rajshekhar</text>
+
+  <!-- Internet -->
+  <ellipse cx="500" cy="115" rx="65" ry="26" fill="#8FA396"/>
+  <text x="500" y="120" font-size="13" text-anchor="middle" fill="#1B3A3A" font-weight="600">Internet</text>
+
+  <line x1="500" y1="141" x2="500" y2="175" stroke="#2A2724" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="520" y="163" font-size="11" fill="#55524C">HTTP :80</text>
+
+  <!-- Default VPC boundary -->
+  <rect x="60" y="175" width="880" height="420" fill="none" stroke="#1B3A3A" stroke-width="2" stroke-dasharray="6,4"/>
+  <text x="80" y="200" font-size="14" font-weight="700" fill="#1B3A3A">Default VPC (pre-existing — no setup needed)</text>
+  <text x="80" y="218" font-size="11" fill="#6B6760">Internet Gateway already attached · default route table already correct</text>
+
+  <!-- EC2 tier -->
+  <rect x="110" y="250" width="380" height="150" fill="#FFFFFF" stroke="#D8D2C2" stroke-width="1"/>
+  <text x="126" y="272" font-size="12" font-weight="700" fill="#1B3A3A">App Tier</text>
+  <rect x="150" y="290" width="260" height="90" rx="4" fill="#1B3A3A"/>
+  <text x="280" y="325" font-size="13" text-anchor="middle" fill="#F6F1E7" font-weight="600">EC2 Instance</text>
+  <text x="280" y="343" font-size="10" text-anchor="middle" fill="#8FA396">t2.micro · Amazon Linux 2023</text>
+  <text x="280" y="358" font-size="10" text-anchor="middle" fill="#8FA396">Flask app via systemd + Gunicorn</text>
+  <text x="126" y="410" font-size="10" fill="#6B6760">SG "meridian-ec2-sg": 80 from anywhere, 22 from my IP</text>
+
+  <!-- RDS tier -->
+  <rect x="510" y="250" width="380" height="150" fill="#FFFFFF" stroke="#D8D2C2" stroke-width="1"/>
+  <text x="526" y="272" font-size="12" font-weight="700" fill="#1B3A3A">Data Tier</text>
+  <rect x="550" y="290" width="260" height="90" rx="4" fill="#C4632A"/>
+  <text x="680" y="325" font-size="13" text-anchor="middle" fill="#F6F1E7" font-weight="600">RDS — MySQL</text>
+  <text x="680" y="343" font-size="10" text-anchor="middle" fill="#F6E4D8">db.t3.micro · Single-AZ (free tier)</text>
+  <text x="680" y="358" font-size="10" text-anchor="middle" fill="#F6E4D8">Public access: No</text>
+  <text x="526" y="410" font-size="10" fill="#6B6760">SG "meridian-rds-sg": 3306 from meridian-ec2-sg only</text>
+
+  <!-- Arrow EC2 -> RDS -->
+  <line x1="410" y1="335" x2="550" y2="335" stroke="#2A2724" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="480" y="325" font-size="10" text-anchor="middle" fill="#55524C">MySQL :3306</text>
+
+  <!-- Future work note -->
+  <rect x="110" y="440" width="780" height="130" fill="#EFE9DA" stroke="#8FA396" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="128" y="464" font-size="12" font-weight="700" fill="#1B3A3A">Future high-availability upgrade path (documented, not deployed)</text>
+  <text x="128" y="486" font-size="11" fill="#55524C">- Add an Application Load Balancer + a second EC2 instance in another AZ, behind an Auto Scaling Group</text>
+  <text x="128" y="504" font-size="11" fill="#55524C">- Enable RDS Multi-AZ (one checkbox) for an automatic standby database replica</text>
+  <text x="128" y="522" font-size="11" fill="#55524C">- Move EC2 instances into private subnets behind the ALB, with a NAT Gateway if outbound internet is needed</text>
+  <text x="128" y="546" font-size="10" fill="#8FA396">This case study deliberately ships the simpler single-AZ version first: fewer moving parts, fully</text>
+  <text x="128" y="560" font-size="10" fill="#8FA396">within AWS free tier, and easy to verify each layer works before adding redundancy on top of it.</text>
+
+  <!-- Legend -->
+  <rect x="60" y="600" width="880" height="30" fill="#FFFFFF" stroke="#D8D2C2"/>
+  <text x="76" y="619" font-size="10" fill="#55524C">All AWS-to-AWS security group rules reference security-group IDs, never raw IP addresses — this is what keeps the connection reliable.</text>
+</svg>

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Meridian Goods — Catalog{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <h1>Things worth keeping.</h1>
+  <p>A small, considered catalog — browse by category or search for something specific.</p>
+</section>
+
+<form class="filter-bar" method="get" action="{{ url_for('index') }}">
+  <input type="text" name="q" placeholder="Search products…" value="{{ search }}">
+  <select name="category" onchange="this.form.submit()">
+    <option value="">All categories</option>
+    {% for c in categories %}
+      <option value="{{ c.name }}" {% if c.name == active_category %}selected{% endif %}>{{ c.name }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Filter</button>
+</form>
+
+{% if products %}
+<div class="product-grid">
+  {% for p in products %}
+  <a class="product-tile" href="{{ url_for('product_detail', product_id=p.id) }}">
+    <span class="tile-category">{{ p.category or "Uncategorized" }}</span>
+    <h2 class="tile-name">{{ p.name }}</h2>
+    <p class="tile-desc">{{ p.description[:90] }}{% if p.description|length > 90 %}…{% endif %}</p>
+    <div class="tile-footer">
+      <span class="tile-price">₹{{ "%.2f"|format(p.price) }}</span>
+      <span class="tile-stock {% if p.stock == 0 %}out{% endif %}">
+        {% if p.stock > 0 %}{{ p.stock }} in stock{% else %}Out of stock{% endif %}
+      </span>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <p>Nothing matches that search yet.</p>
+  <a href="{{ url_for('index') }}">Clear filters</a>
+</div>
+{% endif %}
+
+{% endblock %}
